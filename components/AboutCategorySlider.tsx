@@ -64,13 +64,15 @@ export default function AboutCategorySlider() {
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
-  // Update visible cards on window resize
+  // Update visible cards on window resize (4 on Laptop/Desktop, 3 on Tablet landscape, 2 on Tablet portrait, 1 on Mobile)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setVisibleCards(3); // Desktop: 3 cards
+        setVisibleCards(4); // Desktop / Laptop: 4 sleek cards
+      } else if (window.innerWidth >= 768) {
+        setVisibleCards(3); // Tablet landscape: 3 cards
       } else if (window.innerWidth >= 640) {
-        setVisibleCards(2); // Tablet: 2 cards
+        setVisibleCards(2); // Tablet portrait: 2 cards
       } else {
         setVisibleCards(1); // Mobile: 1 card
       }

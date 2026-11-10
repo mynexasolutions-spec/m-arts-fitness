@@ -86,7 +86,7 @@ export default function CollectionsGrid() {
 
   return (
     <section className="pt-2 sm:pt-4 pb-14 md:pb-20 bg-[#fffaf7]">
-      <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+      <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
         {/* ========================================================= */}
         {/* 1. MOBILE VIEW: Interactive Auto-Slider Banner (< md)     */}
         {/* ========================================================= */}

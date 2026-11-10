@@ -393,9 +393,9 @@ export default function AboutPage() {
         {/* ========================================================= */}
         {/* 6. OUR CORE VALUES                                        */}
         {/* ========================================================= */}
-        <section className="py-16 sm:py-20 lg:py-24 xl:py-28 bg-white border-b border-stone-200">
-          <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
-            <div className="text-center max-w-3xl mx-auto mb-14 xl:mb-18">
+        <section className="py-14 sm:py-16 lg:py-20 xl:py-24 bg-white border-b border-stone-200">
+          <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
+            <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
               <div className="inline-flex items-center gap-2 mb-2">
                 <span className="w-5 h-[2px] bg-orange-500" />
                 <span className="text-xs font-bold tracking-widest text-orange-600 uppercase">
@@ -411,25 +411,24 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 xl:gap-8">
               {values.map((val, idx) => {
                 const Icon = val.icon;
                 return (
                   <div
                     key={idx}
-                    className="p-6 sm:p-7 xl:p-8 2xl:p-9 rounded-3xl bg-stone-50 border border-stone-200/90 hover:bg-white hover:border-orange-500 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 group flex flex-col justify-between"
+                    className="group bg-white rounded-2xl p-5 sm:p-6 lg:p-7 text-center border border-stone-200/80 shadow-xs hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-400 transition-all duration-300 flex flex-col items-center justify-start transform hover:-translate-y-1.5"
                   >
-                    <div>
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-stone-900 text-orange-500 flex items-center justify-center mb-5 sm:mb-6 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
-                        <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
-                      </div>
-                      <h3 className="text-base sm:text-lg xl:text-xl font-bold text-stone-900 mb-2 group-hover:text-orange-600 transition-colors">
-                        {val.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm xl:text-[15px] text-stone-600 leading-relaxed font-normal">
-                        {val.description}
-                      </p>
+                    {/* Matte Black Badge with Glowing Orange Icon (Gymshark/Under Armour Style) */}
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-stone-900 border border-stone-800 text-orange-500 flex items-center justify-center shadow-md shadow-stone-950/20 mb-4 group-hover:bg-orange-500 group-hover:border-orange-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-orange-500/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shrink-0">
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-300" />
                     </div>
+                    <h3 className="text-sm sm:text-base lg:text-lg font-bold text-stone-900 mb-1.5 group-hover:text-orange-600 transition-colors leading-snug">
+                      {val.title}
+                    </h3>
+                    <p className="text-xs sm:text-[13px] text-stone-600 leading-relaxed font-normal">
+                      {val.description}
+                    </p>
                   </div>
                 );
               })}
@@ -441,7 +440,7 @@ export default function AboutPage() {
         {/* 7. WHAT WE OFFER (INTERACTIVE AUTO-SLIDE CAROUSEL)         */}
         {/* ========================================================= */}
         <section className="py-16 sm:py-20 lg:py-24 xl:py-28 bg-[#faf8f6] border-b border-stone-200">
-          <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+          <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
             <AboutCategorySlider />
           </div>
         </section>

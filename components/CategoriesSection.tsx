@@ -71,7 +71,7 @@ export default function CategoriesSection() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[320px] bg-gradient-to-r from-orange-500/5 via-amber-500/5 to-transparent blur-3xl pointer-events-none rounded-full"
       />
 
-      <div className="relative max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+      <div className="relative max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
@@ -90,8 +90,8 @@ export default function CategoriesSection() {
           </p>
         </div>
 
-        {/* Categories Grid - 6 Elevated Studio Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-5 xl:gap-6">
+        {/* Categories Grid - 6 Elevated Studio Cards with Roomy Responsive Layout */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-5 xl:gap-5.5 2xl:gap-6">
           {categories.map((cat) => (
             <Link
               key={cat.id}
@@ -104,22 +104,24 @@ export default function CategoriesSection() {
                   src={cat.image}
                   alt={cat.name}
                   fill
-                  sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 16vw"
+                  sizes="(max-width: 640px) 45vw, (max-width: 1280px) 30vw, (max-width: 1536px) 16vw, 260px"
                   className="object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
                 />
               </div>
 
-              {/* Category Info & Interactive Pill */}
-              <div className="w-full p-3.5 sm:p-4 pt-3 sm:pt-3.5 flex flex-col items-center">
-                <h3 className="text-xs sm:text-[14px] xl:text-[15px] font-extrabold text-stone-900 group-hover:text-orange-600 transition-colors leading-snug line-clamp-1">
-                  {cat.name}
-                </h3>
-                <p className="text-[10px] sm:text-[11px] text-stone-500 font-medium mt-0.5 line-clamp-1">
-                  {cat.sub}
-                </p>
+              {/* Category Info & Interactive Pill (Full Title Display without Truncation) */}
+              <div className="w-full p-3.5 sm:p-4 pt-3 sm:pt-3.5 flex flex-col items-center flex-1 justify-between">
+                <div className="flex flex-col items-center w-full">
+                  <h3 className="text-xs sm:text-[13.5px] xl:text-[14.5px] font-extrabold text-stone-900 group-hover:text-orange-600 transition-colors leading-snug min-h-[2.5rem] flex items-center justify-center text-center px-1">
+                    {cat.name}
+                  </h3>
+                  <p className="text-[10px] sm:text-[11px] text-stone-500 font-medium mt-1 text-center">
+                    {cat.sub}
+                  </p>
+                </div>
 
                 {/* Arrowless Sleek Interactive Pill */}
-                <span className="mt-3 inline-flex items-center text-[10px] sm:text-[11px] font-bold text-orange-600 bg-orange-50 group-hover:bg-orange-500 group-hover:text-white px-3 py-1 rounded-full transition-all duration-300">
+                <span className="mt-3 inline-flex items-center text-[10px] sm:text-[11px] font-bold text-orange-600 bg-orange-50 group-hover:bg-orange-500 group-hover:text-white px-3.5 py-1 rounded-full transition-all duration-300">
                   Explore
                 </span>
               </div>

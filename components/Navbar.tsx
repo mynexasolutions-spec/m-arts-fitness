@@ -29,6 +29,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [navSearch, setNavSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
@@ -52,10 +53,22 @@ export default function Navbar() {
     }
   };
 
-  // Close user dropdown on route changes
+  // Close user dropdown & search on route changes
   useEffect(() => {
     setUserMenuOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
+
+  // Handle ESC key to close search bar
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSearchOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Lock body scroll only when drawer is active
   useEffect(() => {
@@ -69,13 +82,61 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#0d0d0d]/85 backdrop-blur-md shadow-md border-b border-white/10 w-full transition-colors">
-        <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
-          <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 gap-3 lg:gap-6 xl:gap-8">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-stone-200 w-full transition-colors">
+        {/* ========================================================= */}
+        {/* SLIDE-DOWN SEARCH OVERLAY BAR (Nike / Apple Style)        */}
+        {/* ========================================================= */}
+        <div
+          className={`absolute inset-x-0 top-0 h-full bg-white z-30 flex items-center transition-all duration-300 ease-in-out px-4 sm:px-6 lg:px-10 border-b border-stone-200 ${
+            searchOpen
+              ? "opacity-100 translate-y-0 pointer-events-auto shadow-md"
+              : "opacity-0 -translate-y-full pointer-events-none"
+          }`}
+        >
+          <div className="max-w-[1520px] 2xl:max-w-[1680px] w-full mx-auto flex items-center justify-between gap-4">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex-1 max-w-4xl mx-auto flex items-center gap-3"
+            >
+              <SearchIcon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 shrink-0" />
+              <input
+                type="text"
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                placeholder="Search premium gym equipment, sports gear, wellness products..."
+                autoFocus={searchOpen}
+                className="w-full text-base sm:text-lg lg:text-xl font-medium text-stone-900 placeholder:text-stone-400 bg-transparent outline-none border-none focus:ring-0"
+              />
+              {navSearch && (
+                <button
+                  type="button"
+                  onClick={() => setNavSearch("")}
+                  className="text-stone-400 hover:text-stone-600 text-xs sm:text-sm font-semibold px-2 py-1 rounded-md"
+                >
+                  Clear
+                </button>
+              )}
+            </form>
+
+            <button
+              type="button"
+              onClick={() => setSearchOpen(false)}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-bold text-stone-600 hover:text-orange-600 hover:bg-stone-100 rounded-full transition-colors cursor-pointer shrink-0"
+              aria-label="Close search"
+            >
+              <XIcon className="w-5 h-5" />
+              <span className="hidden sm:inline">Close</span>
+              <span className="hidden md:inline text-[10px] bg-stone-200 text-stone-600 px-1.5 py-0.5 rounded font-mono">ESC</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10">
+          <div className="relative flex items-center justify-between h-18 sm:h-22 lg:h-24 gap-2 sm:gap-4">
             
-            {/* Logo & Brand Name */}
-            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 shrink-0 group">
-              <div className="relative w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 xl:w-12 xl:h-12 shrink-0 transition-transform group-hover:scale-105 duration-200">
+            {/* Logo & Brand Name (Left) */}
+            <Link href="/" className="flex items-center gap-2 sm:gap-3.5 shrink-0 group z-10 min-w-0">
+              <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 transition-transform group-hover:scale-105 duration-200">
                 <Image
                   src="/logo.png"
                   alt="M.art Sports & Fitness"
@@ -85,35 +146,35 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-extrabold text-xl sm:text-[22px] lg:text-2xl tracking-tight text-white leading-none group-hover:text-orange-500 transition-colors">
+                <span className="font-extrabold text-xl sm:text-3xl lg:text-[32px] tracking-tight text-stone-900 leading-none group-hover:text-orange-600 transition-colors">
                   M.art
                 </span>
-                <span className="text-[9px] sm:text-[10px] lg:text-[11px] font-bold tracking-wider text-orange-500 uppercase mt-0.5 whitespace-nowrap">
+                <span className="text-[9px] sm:text-[11px] lg:text-xs font-bold tracking-wider text-orange-600 uppercase mt-0.5 sm:mt-1 whitespace-nowrap">
                   Sports &amp; Fitness
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Nav Links */}
-            <nav className="hidden lg:flex items-center gap-4 xl:gap-7 2xl:gap-9 text-[15px] xl:text-[16px] font-semibold text-stone-300 tracking-normal shrink-0">
+            {/* Desktop Nav Links (True Centered) */}
+            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 xl:gap-8 2xl:gap-10 text-[15px] xl:text-[16px] font-semibold text-stone-700 tracking-normal pointer-events-auto">
               <Link
                 href="/"
                 className={`py-1 transition-colors whitespace-nowrap ${
                   pathname === "/"
-                    ? "text-orange-500 font-bold border-b-2 border-orange-500"
-                    : "hover:text-orange-500"
+                    ? "text-orange-600 font-bold border-b-2 border-orange-600"
+                    : "hover:text-orange-600"
                 }`}
               >
                 Home
               </Link>
 
-              {/* Products Page Link (First Products, then Categories) */}
+              {/* Products Page Link */}
               <Link
                 href="/products"
                 className={`py-1 transition-colors whitespace-nowrap ${
                   pathname === "/products"
-                    ? "text-orange-500 font-bold border-b-2 border-orange-500"
-                    : "hover:text-orange-500"
+                    ? "text-orange-600 font-bold border-b-2 border-orange-600"
+                    : "hover:text-orange-600"
                 }`}
               >
                 <span>Products</span>
@@ -128,23 +189,23 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setCategoriesDropdownOpen((prev) => !prev)}
-                  className="flex items-center gap-1 cursor-pointer hover:text-orange-500 text-stone-300 transition-colors py-1 whitespace-nowrap"
+                  className="flex items-center gap-1 cursor-pointer hover:text-orange-600 text-stone-700 transition-colors py-1 whitespace-nowrap"
                 >
                   <span>Categories</span>
                 </button>
 
                 {categoriesDropdownOpen && (
-                  <div className="absolute left-0 top-full pt-1 w-60 z-50">
-                    <div className="bg-[#181818]/95 backdrop-blur-md rounded-2xl border border-stone-800 shadow-2xl p-2 space-y-1">
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full pt-1 w-60 z-50">
+                    <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-stone-200 shadow-xl p-2 space-y-1">
                       {NAV_CATEGORIES.map((cat) => (
                         <Link
                           key={cat.href}
                           href={cat.href}
                           onClick={() => setCategoriesDropdownOpen(false)}
-                          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs xl:text-[13px] font-bold text-stone-300 hover:bg-stone-800 hover:text-orange-400 transition-colors"
+                          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs xl:text-[13px] font-bold text-stone-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                         >
                           <span>{cat.label}</span>
-                          <span className="text-[10px] font-extrabold bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-extrabold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">
                             {cat.count}
                           </span>
                         </Link>
@@ -158,8 +219,8 @@ export default function Navbar() {
                 href="/about"
                 className={`py-1 transition-colors whitespace-nowrap ${
                   pathname === "/about"
-                    ? "text-orange-500 font-bold border-b-2 border-orange-500"
-                    : "hover:text-orange-500"
+                    ? "text-orange-600 font-bold border-b-2 border-orange-600"
+                    : "hover:text-orange-600"
                 }`}
               >
                 About Us
@@ -169,43 +230,30 @@ export default function Navbar() {
                 href="/contact"
                 className={`py-1 transition-colors whitespace-nowrap ${
                   pathname === "/contact"
-                    ? "text-orange-500 font-bold border-b-2 border-orange-500"
-                    : "hover:text-orange-500"
+                    ? "text-orange-600 font-bold border-b-2 border-orange-600"
+                    : "hover:text-orange-600"
                 }`}
               >
                 Contact
               </Link>
             </nav>
 
-            {/* Right Actions: Search Box, Wishlist, Cart & Mobile Hamburger */}
-            <div className="flex items-center gap-2 sm:gap-3 xl:gap-4 shrink-0">
-              {/* Search Box on Tablet/Desktop */}
-              <form
-                onSubmit={handleSearchSubmit}
-                className="relative hidden md:block w-40 lg:w-48 xl:w-60 2xl:w-72 transition-all"
+            {/* Right Actions: Search Icon, Wishlist, Cart & Mobile Hamburger */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 xl:gap-3 shrink-0 z-10">
+              {/* Search Icon Trigger */}
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="p-2 text-stone-700 hover:text-orange-600 transition-colors rounded-full hover:bg-stone-100 cursor-pointer"
+                aria-label="Search products"
               >
-                <input
-                  type="text"
-                  value={navSearch}
-                  onChange={(e) => setNavSearch(e.target.value)}
-                  placeholder="Search products..."
-                  autoComplete="off"
-                  suppressHydrationWarning
-                  className="w-full pl-3.5 pr-9 py-2 text-xs sm:text-sm rounded-full border border-stone-700/80 bg-stone-900/80 hover:bg-stone-900 focus:bg-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all text-white placeholder:text-stone-400 font-medium"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-orange-400 p-0.5 cursor-pointer"
-                  aria-label="Search"
-                >
-                  <SearchIcon className="w-4 h-4" />
-                </button>
-              </form>
+                <SearchIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
 
               {/* Wishlist */}
               <Link
                 href="/wishlist"
-                className="p-2 sm:p-2.5 text-stone-300 hover:text-orange-400 transition-colors rounded-full hover:bg-white/10 relative shrink-0 cursor-pointer"
+                className="p-2 text-stone-700 hover:text-orange-600 transition-colors rounded-full hover:bg-stone-100 relative shrink-0 cursor-pointer"
                 aria-label="Wishlist"
               >
                 <HeartIcon
@@ -223,7 +271,7 @@ export default function Navbar() {
               {/* Cart with count badge */}
               <Link
                 href="/cart"
-                className="p-2 sm:p-2.5 text-stone-300 hover:text-orange-400 transition-colors rounded-full hover:bg-white/10 relative shrink-0 cursor-pointer"
+                className="p-2 text-stone-700 hover:text-orange-600 transition-colors rounded-full hover:bg-stone-100 relative shrink-0 cursor-pointer"
                 aria-label="Shopping Cart"
               >
                 <ShoppingCartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -234,27 +282,27 @@ export default function Navbar() {
 
               {/* Desktop / Tablet Log In & Sign Up Buttons */}
               {!user ? (
-                <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-stone-800">
+                <div className="hidden sm:flex items-center gap-1.5 xl:gap-2 pl-2 border-l border-stone-200">
                   <button
                     type="button"
                     onClick={openLoginModal}
-                    className="px-3.5 py-1.5 text-xs xl:text-sm font-bold text-stone-200 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer whitespace-nowrap"
+                    className="px-3 py-1.5 text-xs xl:text-sm font-bold text-stone-700 hover:text-orange-600 hover:bg-stone-100 rounded-full transition-colors cursor-pointer whitespace-nowrap"
                   >
                     Log In
                   </button>
                   <button
                     type="button"
                     onClick={openSignUpModal}
-                    className="px-4 py-1.5 text-xs xl:text-sm font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-full shadow-md hover:shadow-orange-500/25 transition-all cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
+                    className="px-3.5 xl:px-4 py-1.5 text-xs xl:text-sm font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-full shadow-sm hover:shadow-orange-500/25 transition-all cursor-pointer whitespace-nowrap transform hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Sign Up
                   </button>
                 </div>
               ) : (
-                <div className="relative hidden sm:block pl-2 border-l border-stone-800">
+                <div className="relative hidden sm:block pl-2 border-l border-stone-200">
                   <Link
                     href="/profile"
-                    className="flex items-center gap-2 p-1.5 pr-3.5 rounded-full bg-orange-500/15 hover:bg-orange-500 border border-orange-500 text-orange-400 hover:text-white transition-all cursor-pointer shadow-xs hover:shadow-orange-500/25 group"
+                    className="flex items-center gap-2 p-1.5 pr-3.5 rounded-full bg-orange-50 hover:bg-orange-500 border border-orange-200 hover:border-orange-500 text-orange-600 hover:text-white transition-all cursor-pointer shadow-xs hover:shadow-orange-500/25 group"
                     aria-label="View Athlete Profile"
                   >
                     <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-black text-xs flex items-center justify-center uppercase shadow-sm group-hover:scale-105 transition-transform">
@@ -262,7 +310,7 @@ export default function Navbar() {
                         ? user.user_metadata.full_name.charAt(0).toUpperCase()
                         : user.email?.charAt(0).toUpperCase() || "U"}
                     </div>
-                    <span className="text-xs font-bold max-w-[100px] truncate text-orange-200 group-hover:text-white">
+                    <span className="text-xs font-bold max-w-[100px] truncate text-stone-800 group-hover:text-white">
                       {user.user_metadata?.full_name ||
                         user.email?.split("@")[0] ||
                         "Profile"}
@@ -271,31 +319,14 @@ export default function Navbar() {
                 </div>
               )}
 
-              {/* Mobile User Icon (< sm) */}
-              <Link
-                href={user ? "/profile" : "#"}
-                onClick={
-                  user
-                    ? undefined
-                    : (e) => {
-                        e.preventDefault();
-                        openLoginModal();
-                      }
-                }
-                className="p-2 sm:hidden text-orange-500 hover:text-orange-400 transition-colors rounded-full hover:bg-orange-500/15 cursor-pointer"
-                aria-label="Account Profile"
-              >
-                <UserIcon className="w-5 h-5 text-orange-500" />
-              </Link>
-
               {/* 3-Line Hamburger Trigger for Slide-over Sidebar Drawer */}
               <button
                 type="button"
                 onClick={() => setDrawerOpen(true)}
-                className="p-2 lg:hidden text-stone-300 hover:text-orange-400 rounded-lg hover:bg-white/10 transition-colors shrink-0"
+                className="p-1.5 sm:p-2 lg:hidden text-stone-700 hover:text-orange-600 rounded-lg hover:bg-stone-100 transition-colors shrink-0 cursor-pointer"
                 aria-label="Open Navigation Sidebar"
               >
-                <MenuIcon className="w-6 h-6" />
+                <MenuIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
           </div>
@@ -316,17 +347,17 @@ export default function Navbar() {
         {/* Dark Backdrop Overlay */}
         <div
           onClick={() => setDrawerOpen(false)}
-          className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+          className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
         />
 
         {/* Sidebar Panel sliding from Right */}
         <div
-          className={`absolute top-0 right-0 bottom-0 w-[85%] max-w-[340px] bg-[#141414] text-white shadow-2xl z-10 flex flex-col transition-transform duration-300 ease-out transform ${
+          className={`absolute top-0 right-0 bottom-0 w-[85%] max-w-[340px] bg-white text-stone-900 shadow-2xl z-10 flex flex-col transition-transform duration-300 ease-out transform ${
             drawerOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {/* Drawer Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-stone-800 bg-[#181818]">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-stone-200 bg-stone-50/70">
             <div className="flex items-center gap-3">
               <div className="relative w-10 h-10 shrink-0">
                 <Image
@@ -337,10 +368,10 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-extrabold text-lg text-white leading-tight">
+                <span className="font-extrabold text-lg text-stone-900 leading-tight">
                   M.art
                 </span>
-                <span className="text-[10px] font-bold text-orange-500 tracking-wider uppercase">
+                <span className="text-[10px] font-bold text-orange-600 tracking-wider uppercase">
                   Sports &amp; Fitness
                 </span>
               </div>
@@ -349,7 +380,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setDrawerOpen(false)}
-              className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
+              className="p-1.5 rounded-full text-stone-500 hover:text-stone-900 hover:bg-stone-200/60 transition-colors"
               aria-label="Close Sidebar"
             >
               <XIcon className="w-5 h-5" />
@@ -365,8 +396,8 @@ export default function Navbar() {
                 onClick={() => setDrawerOpen(false)}
                 className={`flex items-center justify-between px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors ${
                   pathname === "/"
-                    ? "text-orange-500 bg-orange-950/40 font-bold"
-                    : "text-stone-300 hover:bg-stone-800/60 hover:text-orange-400"
+                    ? "text-orange-600 bg-orange-50 font-bold"
+                    : "text-stone-700 hover:bg-stone-100 hover:text-orange-600"
                 }`}
               >
                 <span>Home</span>
@@ -378,8 +409,8 @@ export default function Navbar() {
                 onClick={() => setDrawerOpen(false)}
                 className={`flex items-center justify-between px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors ${
                   pathname === "/products"
-                    ? "text-orange-500 bg-orange-950/40 font-bold"
-                    : "text-stone-300 hover:bg-stone-800/60 hover:text-orange-400"
+                    ? "text-orange-600 bg-orange-50 font-bold"
+                    : "text-stone-700 hover:bg-stone-100 hover:text-orange-600"
                 }`}
               >
                 <span>Products</span>
@@ -392,8 +423,8 @@ export default function Navbar() {
                   onClick={() => setMobileCategoriesOpen((prev) => !prev)}
                   className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors cursor-pointer ${
                     mobileCategoriesOpen
-                      ? "text-orange-500 bg-orange-950/40 font-bold"
-                      : "text-stone-300 hover:bg-stone-800/60 hover:text-orange-400"
+                      ? "text-orange-600 bg-orange-50 font-bold"
+                      : "text-stone-700 hover:bg-stone-100 hover:text-orange-600"
                   }`}
                 >
                   <span>Categories</span>
@@ -406,10 +437,10 @@ export default function Navbar() {
                         key={cat.href}
                         href={cat.href}
                         onClick={() => setDrawerOpen(false)}
-                        className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-stone-300 hover:bg-stone-800 hover:text-orange-400 transition-colors"
+                        className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-stone-600 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                       >
                         <span>{cat.label}</span>
-                        <span className="text-[10px] font-extrabold bg-stone-800 text-stone-400 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-extrabold bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">
                           {cat.count}
                         </span>
                       </Link>
@@ -430,8 +461,8 @@ export default function Navbar() {
                     onClick={() => setDrawerOpen(false)}
                     className={`flex items-center justify-between px-4 py-3.5 rounded-xl text-[15px] font-semibold transition-colors ${
                       isActive
-                        ? "text-orange-500 bg-orange-950/40 font-bold"
-                        : "text-stone-300 hover:bg-stone-800/60 hover:text-orange-400"
+                        ? "text-orange-600 bg-orange-50 font-bold"
+                        : "text-stone-700 hover:bg-stone-100 hover:text-orange-600"
                     }`}
                   >
                     <span>{item.name}</span>
@@ -442,7 +473,7 @@ export default function Navbar() {
           </div>
 
           {/* Drawer Auth Footer: Log In & Sign Up buttons or user info */}
-          <div className="p-4 border-t border-stone-800 bg-[#181818]">
+          <div className="p-4 border-t border-stone-200 bg-stone-50/70">
             {!user ? (
               <div className="space-y-2">
                 <button
@@ -451,7 +482,7 @@ export default function Navbar() {
                     setDrawerOpen(false);
                     openLoginModal();
                   }}
-                  className="w-full py-2.5 px-4 text-sm font-bold text-stone-200 bg-[#242424] border border-stone-700 hover:border-orange-500 rounded-xl transition-all cursor-pointer shadow-xs text-center"
+                  className="w-full py-2.5 px-4 text-sm font-bold text-stone-700 bg-white border border-stone-200 hover:border-orange-500 hover:text-orange-600 rounded-xl transition-all cursor-pointer shadow-xs text-center"
                 >
                   Log In
                 </button>
@@ -471,7 +502,7 @@ export default function Navbar() {
                 <Link
                   href="/profile"
                   onClick={() => setDrawerOpen(false)}
-                  className="flex items-center gap-3 p-3 rounded-2xl bg-orange-500/15 border border-orange-500/60 hover:bg-orange-500/25 transition-all cursor-pointer group"
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-orange-50 border border-orange-200 hover:bg-orange-100/70 transition-all cursor-pointer group"
                 >
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-extrabold text-sm flex items-center justify-center uppercase shadow-xs">
                     {user.user_metadata?.full_name
@@ -479,10 +510,10 @@ export default function Navbar() {
                       : user.email?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-white truncate">
+                    <p className="text-sm font-bold text-stone-900 truncate">
                       {user.user_metadata?.full_name || "M.art Member"}
                     </p>
-                    <p className="text-xs text-orange-400 font-semibold group-hover:underline">
+                    <p className="text-xs text-orange-600 font-semibold group-hover:underline">
                       View Athlete Profile
                     </p>
                   </div>
@@ -493,7 +524,7 @@ export default function Navbar() {
                     setDrawerOpen(false);
                     await signOut();
                   }}
-                  className="w-full py-2 px-3 text-xs font-bold text-red-400 bg-red-950/40 hover:bg-red-900/50 rounded-xl transition-colors cursor-pointer text-center"
+                  className="w-full py-2 px-3 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors cursor-pointer text-center"
                 >
                   Sign Out
                 </button>

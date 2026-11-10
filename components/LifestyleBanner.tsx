@@ -10,14 +10,15 @@ export default function LifestyleBanner() {
       {/* ========================================================= */}
       <section className="sm:hidden w-full bg-white text-neutral-900 pt-3 pb-8 px-4 border-b border-stone-200/80">
         <div className="max-w-md mx-auto">
-          {/* Top: 100% Crisp 16:10 Athlete Action Photo */}
-          <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-md border border-stone-200/90 mb-4 bg-stone-900">
+          {/* Top: 100% Crisp 4:5 Athlete Action Photo */}
+          <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-md border border-stone-200/90 mb-4 bg-stone-900">
             <Image
-              src="/Lifestyle4ratio5.jpg"
+              src="/Lifestyle-mobile-4-5.jpg"
               alt="Fitness is a Lifestyle - Athlete Workout"
               fill
               priority
-              className="object-cover object-[center_20%]"
+              sizes="100vw"
+              className="object-cover object-center"
             />
             {/* Subtle corner badge */}
             <div className="absolute top-3 left-3 z-10">
@@ -73,24 +74,27 @@ export default function LifestyleBanner() {
       </section>
 
       {/* ========================================================= */}
-      {/* 2. TABLET & DESKTOP VIEW (>= sm): Widescreen 16:9 Banner  */}
+      {/* 2. TABLET & DESKTOP VIEW (>= sm): Edge-to-Edge 21:9 Banner*/}
       {/* ========================================================= */}
-      <section className="hidden sm:flex relative w-full bg-[#111] overflow-hidden text-white py-10 sm:py-12 md:py-14 lg:py-16 min-h-[360px] sm:min-h-[400px] md:min-h-[440px] lg:min-h-[480px] xl:min-h-[500px] items-center">
-        {/* Background Image of Athlete with Battle Ropes - Responsive Hero-style Focal Lock */}
+      <section className="hidden sm:flex relative w-full bg-[#0d0d0d] overflow-hidden text-white py-12 sm:py-14 md:py-16 lg:py-20 min-h-[440px] md:min-h-[500px] lg:min-h-[580px] xl:min-h-[660px] 2xl:min-h-[720px] lg:aspect-[21/9] max-h-[780px] items-center border-b border-stone-800/60">
+        {/* Background Image of Athlete with Battle Ropes - Cinematic 21:9 Ultrawide */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/Fitness-lifestyle-16-9.jpg"
+            src="/Lifestyle-desktop-21-9.jpg"
             alt="Fitness is a Lifestyle"
             fill
             priority
-            className="object-cover object-[80%_10%] sm:object-[82%_10%] lg:object-[84%_8%] xl:object-[85%_8%] 2xl:object-[86%_6%] brightness-85"
+            sizes="100vw"
+            className="object-cover object-[70%_center] lg:object-[68%_center] xl:object-[66%_center] brightness-90"
           />
-          {/* Dark Left Overlay for Text Legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 md:via-black/70 to-transparent" />
+          {/* Dark Left Scrim for Crisp Text Legibility without blocking the athlete */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 md:via-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
-          <div className="max-w-2xl xl:max-w-3xl">
+        {/* Widescreen-locked Inner Content Container */}
+        <div className="relative z-10 w-full max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
+          <div className="max-w-xl lg:max-w-2xl xl:max-w-3xl">
             {/* Subtitle tag */}
             <div className="inline-flex items-center gap-2.5 mb-2.5 sm:mb-3">
               <span className="w-5 sm:w-6 h-[2px] bg-orange-500 rounded-full" />
@@ -116,7 +120,7 @@ export default function LifestyleBanner() {
             <div>
               <Link
                 href="/products"
-                className="inline-flex items-center px-7 sm:px-8 py-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-500/30 transition-all transform hover:-translate-y-0.5 active:scale-95"
+                className="inline-flex items-center px-7 sm:px-8 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-orange-500/30 transition-all transform hover:-translate-y-0.5 active:scale-95"
               >
                 <span>Explore Store</span>
               </Link>

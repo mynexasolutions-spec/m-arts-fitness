@@ -5,6 +5,8 @@ import { StoreProvider } from "@/context/StoreContext";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthModal from "@/components/AuthModal";
 
+export const instant = false;
+
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -15,7 +17,12 @@ export const metadata: Metadata = {
   description:
     "Gear up for a healthier you with premium sports, gym, and fitness equipment for every age and every goal.",
   icons: {
-    icon: "/logo.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png" }],
   },
 };
 

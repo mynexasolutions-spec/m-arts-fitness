@@ -159,7 +159,7 @@ export default function FeaturedProducts() {
   const [productList, setProductList] = useState<Product[]>(products);
   const [activeTab, setActiveTab] = useState("all");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleCards, setVisibleCards] = useState(5);
+  const [visibleCards, setVisibleCards] = useState(4);
   const [isPaused, setIsPaused] = useState(false);
 
   const { addToCart, toggleWishlist, isInWishlist, getProductCartCount } =
@@ -185,16 +185,14 @@ export default function FeaturedProducts() {
     loadFeatured();
   }, []);
 
-  // Responsive visible cards listener
+  // Responsive visible cards listener: 4 on Laptop & Widescreen, 3 on Tablet, 2 on Mobile
   useEffect(() => {
     const updateVisibleCards = () => {
       if (typeof window === "undefined") return;
-      if (window.innerWidth >= 1200) {
-        setVisibleCards(5); // 5 compact cards in a row on desktop
-      } else if (window.innerWidth >= 900) {
-        setVisibleCards(4); // 4 cards on tablet/small desktop
-      } else if (window.innerWidth >= 640) {
-        setVisibleCards(3); // 3 cards on small tablet
+      if (window.innerWidth >= 1024) {
+        setVisibleCards(4); // 4 spacious cards in a row on laptop & widescreen
+      } else if (window.innerWidth >= 768) {
+        setVisibleCards(3); // 3 cards on tablets
       } else {
         setVisibleCards(2); // 2 cards side by side on mobile
       }
@@ -418,7 +416,7 @@ export default function FeaturedProducts() {
       {/* Edge-to-Edge Divider Line */}
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-stone-200 to-transparent mb-7 sm:mb-8 md:mb-9" />
 
-      <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+      <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div className="max-w-2xl">

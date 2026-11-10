@@ -27,7 +27,7 @@ export default function WhyChooseUs() {
 
   return (
     <section className="pt-16 md:pt-20 pb-6 md:pb-8 bg-[#fffaf7]">
-      <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+      <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
         
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto mb-12">

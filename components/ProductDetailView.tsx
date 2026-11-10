@@ -379,7 +379,7 @@ export default function ProductDetailView({
       {/* 1. BREADCRUMB & QUICK NAVIGATION BAR                      */}
       {/* ========================================================= */}
       <div className="border-b border-stone-200/80 bg-white/80 backdrop-blur-xs">
-        <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20 py-3 sm:py-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-stone-500">
+        <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10 py-3 sm:py-3.5 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-stone-500">
           <nav className="flex items-center flex-wrap gap-1.5 sm:gap-2">
             <Link href="/" className="hover:text-orange-600 transition-colors">
               Home
@@ -416,52 +416,16 @@ export default function ProductDetailView({
       {/* ========================================================= */}
       {/* 2. HERO PRODUCT BUY-BOX (Gallery + Info & Highlights)     */}
       {/* ========================================================= */}
-      <section className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20 pt-6 sm:pt-9 pb-10 sm:pb-14">
+      <section className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10 pt-6 sm:pt-9 pb-10 sm:pb-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 xl:gap-12 items-start">
-          {/* LEFT: INTERACTIVE PRODUCT IMAGE GALLERY (5 cols on lg) */}
-          <div className="lg:col-span-6 xl:col-span-5 lg:sticky lg:top-28">
+          {/* LEFT: INTERACTIVE PRODUCT IMAGE GALLERY (Balanced 6 cols on lg & xl, Natural Scroll) */}
+          <div className="lg:col-span-6 xl:col-span-6">
             <div
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
               className="group relative w-full aspect-square rounded-2xl sm:rounded-3xl bg-[#f7f7f6] border border-stone-200/90 overflow-hidden shadow-sm"
             >
-              {/* Top Floating Badge */}
-              <div className="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 z-10 flex items-center gap-2 pointer-events-none">
-                {product.badge === "Best Seller" ? (
-                  <span className="bg-stone-950/90 backdrop-blur-xs text-amber-400 text-xs font-bold px-3 py-1 rounded-full tracking-wide shadow-sm flex items-center gap-1">
-                    <span>★</span>
-                    <span className="text-white">Best Seller</span>
-                  </span>
-                ) : (
-                  <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full tracking-wide shadow-sm">
-                    {product.badge}
-                  </span>
-                )}
-                <span className="bg-white/95 backdrop-blur-xs text-orange-600 border border-orange-200 text-[11px] font-extrabold px-2.5 py-1 rounded-full shadow-2xs">
-                  {product.packInfo.split("+")[0].trim()}
-                </span>
-              </div>
-
-              {/* Wishlist Heart Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleWishlist(product.id);
-                }}
-                aria-label="Add to wishlist"
-                className={`absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 w-10 h-10 rounded-full border shadow-sm flex items-center justify-center transition-all cursor-pointer ${
-                  wishlisted
-                    ? "text-orange-500 border-orange-200 bg-white"
-                    : "text-stone-500 border-stone-200 bg-white/90 hover:text-orange-500 hover:bg-white"
-                }`}
-              >
-                <HeartIcon
-                  className={`w-5 h-5 ${wishlisted ? "fill-orange-500" : ""}`}
-                />
-              </button>
-
               {/* Main Selected Image (Click to Expand Fullscreen) */}
               <button
                 type="button"
@@ -534,34 +498,91 @@ export default function ProductDetailView({
                 })}
               </div>
             )}
+
+            {/* 4-Pillar Highlights Strip (Desktop View: directly below thumbnails to balance layout) */}
+            <div className="hidden lg:grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mt-6">
+              {product.highlights.map((hl) => (
+                <div
+                  key={hl.title}
+                  className="bg-[#fff7f2] border border-orange-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:border-orange-400 transition-colors"
+                >
+                  <div className="w-11 h-11 rounded-full bg-orange-100/90 border border-orange-200 flex items-center justify-center mb-2 shrink-0">
+                    {renderHighlightIcon(hl.icon)}
+                  </div>
+                  <h4 className="text-xs sm:text-[13px] font-extrabold text-stone-900 leading-snug">
+                    {hl.title}
+                  </h4>
+                  <p className="text-[10px] sm:text-[11px] text-stone-600 font-medium mt-0.5 leading-tight">
+                    {hl.subtitle}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* RIGHT: PRODUCT DETAILS, HIGHLIGHTS & BUY CONTROLS */}
-          <div className="lg:col-span-6 xl:col-span-7 flex flex-col">
-            {/* Top Meta Row: Category + SKU + Stock */}
-            <div className="flex flex-wrap items-center gap-2.5 mb-2.5">
-              <span className="text-[11px] font-extrabold uppercase tracking-widest text-orange-600 bg-orange-50 border border-orange-200/80 px-3 py-1 rounded-full">
+          {/* RIGHT: PRODUCT DETAILS, HIGHLIGHTS & BUY CONTROLS (Balanced 6 cols on lg & xl) */}
+          <div className="lg:col-span-6 xl:col-span-6 flex flex-col">
+            {/* Top Meta Row: Badge + Category + Stock + SKU */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5">
+              {product.badge === "Best Seller" ? (
+                <span className="bg-stone-950 text-amber-400 text-xs font-bold px-3 py-1 rounded-full tracking-wide shadow-2xs flex items-center gap-1.5">
+                  <span>★</span>
+                  <span className="text-white">Best Seller</span>
+                </span>
+              ) : (
+                <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full tracking-wide shadow-2xs">
+                  {product.badge}
+                </span>
+              )}
+              <span className="text-[11px] font-extrabold uppercase tracking-widest text-orange-600 bg-orange-50 border border-orange-200/80 px-2.5 py-1 rounded-full">
                 {product.categoryLabel}
-              </span>
-              <span className="text-xs font-semibold text-stone-400">
-                SKU: {product.sku}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200/70 px-2.5 py-0.5 rounded-full">
                 <span>●</span>
                 <span>In Stock • Fast Dispatch</span>
               </span>
+              <span className="text-xs font-semibold text-stone-400">
+                SKU: {product.sku}
+              </span>
             </div>
 
-            {/* Product Title (Infographic Header Style) */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-stone-950 tracking-tight leading-tight">
-              {product.name}
-            </h1>
+            {/* Product Title + Wishlist Button Row */}
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-stone-950 tracking-tight leading-tight flex-1">
+                {product.name}
+              </h1>
+              <button
+                type="button"
+                onClick={() => toggleWishlist(product.id)}
+                aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full border shadow-2xs flex items-center justify-center transition-all cursor-pointer shrink-0 mt-0.5 ${
+                  wishlisted
+                    ? "text-orange-500 border-orange-200 bg-orange-50 shadow-xs"
+                    : "text-stone-400 border-stone-200 bg-white hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50/40"
+                }`}
+                title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              >
+                <HeartIcon
+                  className={`w-5 h-5 sm:w-5.5 sm:h-5.5 ${
+                    wishlisted ? "fill-orange-500" : ""
+                  }`}
+                />
+              </button>
+            </div>
 
-            {/* Orange Tagline Pill (Matches "Adjustable & Durable" / "Comfort • Grip • Durability" from images) */}
-            <div className="mt-2.5 mb-3">
-              <span className="inline-block bg-orange-500 text-white text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full shadow-xs tracking-wide">
-                {product.tagline}
-              </span>
+            {/* Tagline & Pack Info Pills */}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              {product.packInfo && (
+                <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-stone-800 bg-stone-100 border border-stone-200/90 px-3 py-1 rounded-full">
+                  <span>📦</span>
+                  <span>{product.packInfo}</span>
+                </span>
+              )}
+              {product.tagline && (
+                <span className="inline-block bg-orange-500 text-white text-xs sm:text-sm font-extrabold px-3.5 py-1 rounded-full shadow-xs tracking-wide">
+                  {product.tagline}
+                </span>
+              )}
             </div>
 
             {/* Rating & Reviews Row */}
@@ -578,10 +599,6 @@ export default function ProductDetailView({
               </div>
               <span className="text-xs sm:text-sm font-semibold text-stone-600">
                 {product.reviewsCount} Verified Customer Reviews
-              </span>
-              <span className="text-stone-300">|</span>
-              <span className="text-xs font-bold text-stone-700">
-                📦 {product.packInfo}
               </span>
             </div>
 
@@ -605,41 +622,11 @@ export default function ProductDetailView({
               </p>
             </div>
 
-            {/* Lead Summary Paragraph */}
-            <p className="text-stone-700 text-sm sm:text-base font-medium leading-relaxed mb-5">
-              {product.shortDescription}{" "}
-              <span className="text-stone-600 font-normal">
-                {product.description}
-              </span>
-            </p>
-
             {/* ===================================================== */}
-            {/* 4-PILLAR ICON HIGHLIGHTS STRIP (From Infographic Pics) */}
-            {/* ===================================================== */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
-              {product.highlights.map((hl) => (
-                <div
-                  key={hl.title}
-                  className="bg-[#fff7f2] border border-orange-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:border-orange-400 transition-colors"
-                >
-                  <div className="w-11 h-11 rounded-full bg-orange-100/90 border border-orange-200 flex items-center justify-center mb-2 shrink-0">
-                    {renderHighlightIcon(hl.icon)}
-                  </div>
-                  <h3 className="text-xs sm:text-[13px] font-extrabold text-stone-900 leading-snug">
-                    {hl.title}
-                  </h3>
-                  <p className="text-[10px] sm:text-[11px] text-stone-600 font-medium mt-0.5 leading-tight">
-                    {hl.subtitle}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* ===================================================== */}
-            {/* VARIANT / WEIGHT / COLOR OPTIONS PILLS                 */}
+            {/* 1. VARIANT / WEIGHT / COLOR OPTIONS PILLS              */}
             {/* ===================================================== */}
             {product.options && product.options.length > 0 && (
-              <div className="mb-6">
+              <div className="mb-5">
                 <div className="flex items-center justify-between mb-2.5">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-stone-900">
                     {product.optionsLabel || "Available Options"}:
@@ -671,9 +658,9 @@ export default function ProductDetailView({
             )}
 
             {/* ===================================================== */}
-            {/* QUANTITY & ADD TO CART / BUY NOW ACTIONS               */}
+            {/* 2. QUANTITY & ADD TO CART / BUY NOW ACTIONS            */}
             {/* ===================================================== */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
               {/* Quantity Counter */}
               <div className="inline-flex items-center justify-between border border-stone-300 rounded-full bg-white px-2 py-1.5 sm:w-36 shrink-0">
                 <button
@@ -725,23 +712,98 @@ export default function ProductDetailView({
               </button>
             </div>
 
-            {/* Trust Micro-Strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-stone-200/80 text-xs">
-              <div className="flex items-center gap-2 text-stone-700 font-semibold">
-                <TruckIcon className="w-4 h-4 text-orange-500 shrink-0" />
-                <span>Fast Pan-India Delivery</span>
+            {/* ===================================================== */}
+            {/* 3. TRUST MICRO-STRIP (Amazon Style - Icon Top)        */}
+            {/* ===================================================== */}
+            <div className="mb-6 rounded-2xl bg-gradient-to-b from-[#faf8f5] to-[#f5f2ed]/80 border border-stone-200/90 shadow-2xs overflow-hidden">
+              <div className="grid grid-cols-2 lg:grid-cols-4 divide-y divide-stone-200/70 lg:divide-y-0 lg:divide-x divide-stone-200/80">
+                {/* 1. Fast Delivery */}
+                <div className="p-3 sm:p-3.5 flex flex-col items-center text-center justify-center">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-orange-100/90 border border-orange-200/80 text-orange-600 flex items-center justify-center shrink-0 mb-1.5 shadow-2xs">
+                    <TruckIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  </div>
+                  <p className="text-[11px] sm:text-xs font-extrabold text-stone-900 leading-tight">
+                    Pan-India Delivery
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-stone-500 font-medium leading-tight mt-0.5">
+                    Fast &amp; Trackable
+                  </p>
+                </div>
+
+                {/* 2. Quality Tested */}
+                <div className="p-3 sm:p-3.5 flex flex-col items-center text-center justify-center border-l border-stone-200/70 lg:border-l-0">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-orange-100/90 border border-orange-200/80 text-orange-600 flex items-center justify-center shrink-0 mb-1.5 shadow-2xs">
+                    <ShieldCheckIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  </div>
+                  <p className="text-[11px] sm:text-xs font-extrabold text-stone-900 leading-tight">
+                    100% Quality
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-stone-500 font-medium leading-tight mt-0.5">
+                    Tested &amp; Verified
+                  </p>
+                </div>
+
+                {/* 3. Replacement */}
+                <div className="p-3 sm:p-3.5 flex flex-col items-center text-center justify-center">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-orange-100/90 border border-orange-200/80 text-orange-600 flex items-center justify-center shrink-0 mb-1.5 shadow-2xs">
+                    <RotateCcwIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  </div>
+                  <p className="text-[11px] sm:text-xs font-extrabold text-stone-900 leading-tight">
+                    7-Day Returns
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-stone-500 font-medium leading-tight mt-0.5">
+                    Easy Replacement
+                  </p>
+                </div>
+
+                {/* 4. Payments */}
+                <div className="p-3 sm:p-3.5 flex flex-col items-center text-center justify-center border-l border-stone-200/70 lg:border-l-0">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-orange-100/90 border border-orange-200/80 text-orange-600 flex items-center justify-center shrink-0 mb-1.5 shadow-2xs">
+                    <CreditCardIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  </div>
+                  <p className="text-[11px] sm:text-xs font-extrabold text-stone-900 leading-tight">
+                    COD &amp; UPI
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-stone-500 font-medium leading-tight mt-0.5">
+                    Secure Checkout
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-stone-700 font-semibold">
-                <ShieldCheckIcon className="w-4 h-4 text-orange-500 shrink-0" />
-                <span>100% Quality Tested</span>
-              </div>
-              <div className="flex items-center gap-2 text-stone-700 font-semibold">
-                <RotateCcwIcon className="w-4 h-4 text-orange-500 shrink-0" />
-                <span>7-Day Easy Replacement</span>
-              </div>
-              <div className="flex items-center gap-2 text-stone-700 font-semibold">
-                <CreditCardIcon className="w-4 h-4 text-orange-500 shrink-0" />
-                <span>COD & UPI Available</span>
+            </div>
+
+            {/* ===================================================== */}
+            {/* 4. PRODUCT OVERVIEW & 4-PILLAR HIGHLIGHTS (Details)   */}
+            {/* ===================================================== */}
+            <div className="pt-6 border-t border-stone-200/80">
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-stone-900 mb-2.5">
+                Product Overview
+              </h3>
+              {/* Lead Summary Paragraph */}
+              <p className="text-stone-700 text-sm sm:text-base font-medium leading-relaxed mb-6">
+                {product.shortDescription}{" "}
+                <span className="text-stone-600 font-normal">
+                  {product.description}
+                </span>
+              </p>
+
+              {/* 4-Pillar Highlights Strip (Mobile Only: under Overview, on Desktop it is under thumbnails on Left) */}
+              <div className="lg:hidden grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                {product.highlights.map((hl) => (
+                  <div
+                    key={hl.title}
+                    className="bg-[#fff7f2] border border-orange-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:border-orange-400 transition-colors"
+                  >
+                    <div className="w-11 h-11 rounded-full bg-orange-100/90 border border-orange-200 flex items-center justify-center mb-2 shrink-0">
+                      {renderHighlightIcon(hl.icon)}
+                    </div>
+                    <h4 className="text-xs sm:text-[13px] font-extrabold text-stone-900 leading-snug">
+                      {hl.title}
+                    </h4>
+                    <p className="text-[10px] sm:text-[11px] text-stone-600 font-medium mt-0.5 leading-tight">
+                      {hl.subtitle}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -753,7 +815,7 @@ export default function ProductDetailView({
       {/*    (Matches the exact cards in your uploaded images!)      */}
       {/* ========================================================= */}
       <section className="py-10 sm:py-14 bg-[#f8f6f3] border-y border-stone-200/90">
-        <div className="max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+        <div className="max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
           {/* Section Title */}
           <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
             <div className="inline-flex items-center gap-2 mb-2">
@@ -1045,7 +1107,7 @@ export default function ProductDetailView({
       {/* ========================================================= */}
       {/* 4. SIMILAR / RELATED PRODUCTS SECTION                     */}
       {/* ========================================================= */}
-      <section className="py-12 sm:py-16 max-w-[1520px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-20">
+      <section className="py-12 sm:py-16 max-w-[1520px] 2xl:max-w-[1680px] mx-auto px-4 sm:px-8 md:px-10 lg:px-14 xl:px-16 2xl:px-10">
         <div className="flex items-end justify-between mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-2 mb-1.5">
@@ -1178,9 +1240,9 @@ export default function ProductDetailView({
             </div>
           </div>
 
-          {/* Floating Bottom Thumbnail Strip */}
+          {/* Floating Thumbnail Selector (Right-Center Vertical Dock on Laptop, Bottom on Mobile) */}
           {product.gallery.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5 bg-stone-950/80 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl">
+            <div className="absolute z-20 bottom-4 left-1/2 -translate-x-1/2 sm:bottom-auto sm:left-auto sm:right-6 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-0 flex flex-row sm:flex-col items-center gap-2.5 bg-stone-950/85 backdrop-blur-md px-3 py-2 sm:px-2.5 sm:py-3.5 rounded-2xl shadow-2xl border border-white/10">
               {product.gallery.map((imgUrl, idx) => {
                 const isActive = selectedImageIdx === idx;
                 return (
@@ -1191,10 +1253,11 @@ export default function ProductDetailView({
                       setIsZoomed(false);
                       setSelectedImageIdx(idx);
                     }}
-                    className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-white ${
+                    aria-label={`Switch to image view ${idx + 1}`}
+                    className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-white ${
                       isActive
-                        ? "border-orange-500 scale-105 shadow-md"
-                        : "border-white/30 opacity-65 hover:opacity-100"
+                        ? "border-orange-500 scale-105 shadow-md ring-2 ring-orange-500/40"
+                        : "border-white/30 opacity-60 hover:opacity-100 hover:border-white/80"
                     }`}
                   >
                     <Image
