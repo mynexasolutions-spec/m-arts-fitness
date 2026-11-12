@@ -9,6 +9,7 @@ export interface ProductHighlight {
 export interface ProductSpec {
   label: string;
   value: string;
+  unit?: string;
   detail?: string;
 }
 
@@ -16,6 +17,31 @@ export interface ProductIdealFor {
   title: string;
   description: string;
   icon: "home" | "dumbbell" | "yoga" | "scale" | "football" | "agility" | "speed" | "school" | "cardio" | "core" | "rehab" | "outdoor";
+}
+
+export interface ProductVariantGroup {
+  id: string;
+  name: string;
+  values: string[];
+}
+
+export function generateVariantCombinations(groups?: ProductVariantGroup[]): string[] {
+  if (!groups || groups.length === 0) return [];
+  const validGroups = groups.filter((g) => g.values && g.values.length > 0);
+  if (validGroups.length === 0) return [];
+
+  let combos: string[] = [...validGroups[0].values];
+  for (let i = 1; i < validGroups.length; i++) {
+    const nextGroup = validGroups[i];
+    const newCombos: string[] = [];
+    for (const c of combos) {
+      for (const v of nextGroup.values) {
+        newCombos.push(`${c} / ${v}`);
+      }
+    }
+    combos = newCombos;
+  }
+  return combos;
 }
 
 export interface ProductDetailItem {
@@ -26,6 +52,7 @@ export interface ProductDetailItem {
   description: string;
   image: string;
   gallery: string[];
+  galleryMetadata?: Record<string, { color?: string; caption?: string }>;
   infographicImages?: string[];
   category: string;
   categoryLabel: string;
@@ -37,9 +64,14 @@ export interface ProductDetailItem {
   originalPrice: number;
   sku: string;
   inStock: boolean;
+  stockQuantity?: number;
+  lowStockThreshold?: number;
+  trackVariantStock?: boolean;
+  variantStock?: Record<string, number>;
   packInfo: string;
   optionsLabel?: string;
   options?: string[];
+  variantGroups?: ProductVariantGroup[];
   highlights: ProductHighlight[];
   keyFeatures: string[];
   specifications: ProductSpec[];
@@ -69,6 +101,9 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
       "/dumbbells-info-1.jpg",
       "/dumbbells-info-2.jpg",
     ],
+    galleryMetadata: {
+      "/wooden-dumbells.jpg": { color: "Vinyl Coated (Orange)" },
+    },
     infographicImages: ["/dumbbells-info-1.jpg", "/dumbbells-info-2.jpg"],
     category: "gym",
     categoryLabel: "Gym Equipment",
@@ -80,9 +115,38 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 899,
     sku: "MART-DB-001",
     inStock: true,
+    stockQuantity: 68,
+    lowStockThreshold: 5,
+    trackVariantStock: true,
+    variantStock: {
+      "0.5 kg / Natural Hardwood": 10,
+      "0.5 kg / Vinyl Coated (Orange)": 8,
+      "1 kg / Natural Hardwood": 12,
+      "1 kg / Vinyl Coated (Orange)": 15,
+      "1.5 kg / Natural Hardwood": 6,
+      "1.5 kg / Vinyl Coated (Orange)": 5,
+      "2 kg / Natural Hardwood": 8,
+      "2 kg / Vinyl Coated (Orange)": 4,
+      "3 kg / Natural Hardwood": 5,
+      "3 kg / Vinyl Coated (Orange)": 2,
+      "5 kg / Natural Hardwood": 3,
+      "5 kg / Vinyl Coated (Orange)": 0,
+    },
     packInfo: "Set of 2 Dumbbells",
     optionsLabel: "Available Weights (Each)",
     options: ["0.5 kg", "1 kg", "1.5 kg", "2 kg", "3 kg", "5 kg"],
+    variantGroups: [
+      {
+        id: "grp-weights",
+        name: "Available Weights (Each)",
+        values: ["0.5 kg", "1 kg", "1.5 kg", "2 kg", "3 kg", "5 kg"],
+      },
+      {
+        id: "grp-finish",
+        name: "Finish / Edition",
+        values: ["Vinyl Coated (Orange)", "Natural Hardwood"],
+      },
+    ],
     highlights: [
       {
         title: "Builds Strength",
@@ -172,6 +236,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 1199,
     sku: "MART-TC-050",
     inStock: true,
+    stockQuantity: 28,
+    lowStockThreshold: 5,
     packInfo: "Pack of 50 Cones + Carry Stand",
     optionsLabel: "Color Options Included",
     options: ["Bright Yellow", "Fiery Red", "Electric Blue", "Multi-Color Pack of 50"],
@@ -263,6 +329,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 499,
     sku: "MART-SR-204",
     inStock: true,
+    stockQuantity: 4,
+    lowStockThreshold: 5,
     packInfo: "1 Adjustable Pro Jump Rope",
     optionsLabel: "Length Adjustment",
     options: ["Up to 9.5 ft (Adjustable for All Heights)"],
@@ -355,9 +423,38 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 999,
     sku: "MART-YM-6MM",
     inStock: true,
+    stockQuantity: 49,
+    lowStockThreshold: 5,
+    trackVariantStock: true,
+    variantStock: {
+      "6 mm / Royal Blue": 8,
+      "6 mm / Charcoal Black": 10,
+      "6 mm / Deep Purple": 4,
+      "6 mm / Teal Green": 6,
+      "8 mm / Royal Blue": 5,
+      "8 mm / Charcoal Black": 3,
+      "8 mm / Deep Purple": 0,
+      "8 mm / Teal Green": 4,
+      "10 mm / Royal Blue": 2,
+      "10 mm / Charcoal Black": 5,
+      "10 mm / Deep Purple": 2,
+      "10 mm / Teal Green": 0,
+    },
     packInfo: "1 Yoga Mat + Free Carry Strap",
     optionsLabel: "Available Colors",
     options: ["Royal Blue", "Charcoal Black", "Deep Purple", "Teal Green"],
+    variantGroups: [
+      {
+        id: "grp-thickness",
+        name: "Select Thickness",
+        values: ["6 mm", "8 mm", "10 mm"],
+      },
+      {
+        id: "grp-colors",
+        name: "Available Colors",
+        values: ["Royal Blue", "Charcoal Black", "Deep Purple", "Teal Green"],
+      },
+    ],
     highlights: [
       {
         title: "High-Density Cushion",
@@ -446,6 +543,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 2199,
     sku: "MART-HEX-05K",
     inStock: true,
+    stockQuantity: 12,
+    lowStockThreshold: 5,
     packInfo: "Set of 2 (5 kg × 2 = 10 kg Total)",
     optionsLabel: "Available Weight Pairs",
     options: ["2.5 kg Pair", "5 kg Pair", "7.5 kg Pair", "10 kg Pair", "12.5 kg Pair", "15 kg Pair"],
@@ -536,6 +635,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 999,
     sku: "MART-AL-12R",
     inStock: true,
+    stockQuantity: 3,
+    lowStockThreshold: 5,
     packInfo: "6m 12-Rung Ladder + Carry Bag + 4 Ground Pegs",
     optionsLabel: "Ladder Size",
     options: ["4 Meter (8 Rungs)", "6 Meter (12 Rungs)", "8 Meter (16 Rungs)"],
@@ -626,6 +727,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 899,
     sku: "MART-FR-45",
     inStock: true,
+    stockQuantity: 35,
+    lowStockThreshold: 5,
     packInfo: "1 x 45cm EPP Foam Roller",
     optionsLabel: "Roller Length",
     options: ["30 cm", "45 cm", "90 cm"],
@@ -713,6 +816,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 499,
     sku: "MART-SHK-750",
     inStock: true,
+    stockQuantity: 50,
+    lowStockThreshold: 5,
     packInfo: "1 x 750ml Shaker + Whisk Ball",
     optionsLabel: "Color Variant",
     options: ["Matte Black", "Steel Silver", "Olympic Orange"],
@@ -800,6 +905,8 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
     originalPrice: 799,
     sku: "MART-BALL-05",
     inStock: true,
+    stockQuantity: 22,
+    lowStockThreshold: 5,
     packInfo: "1 x Size 5 Ball + Inflation Needle",
     optionsLabel: "Ball Size",
     options: ["Size 4 (Youth)", "Size 5 (Official)"],
@@ -868,94 +975,6 @@ export const ALL_PRODUCTS: ProductDetailItem[] = [
       },
     ],
   },
-  {
-    id: "gym-essentials-kit",
-    name: "Pro Gym Essentials Kit",
-    tagline: "5-in-1 Complete Conditioning Bundle",
-    shortDescription:
-      "All-in-one home workout kit including resistance bands, speed rope, push-up bars, and gym carry tote.",
-    description:
-      "Level up your home fitness regimen with M.art's Pro Gym Essentials Kit. Comes equipped with heavy-duty resistance loop bands, ultra-fast bearing jump rope, ergonomic non-slip push-up handles, and a durable ripstop gym sack. Everything you need for functional hypertrophy, cardio conditioning, and calisthenics.",
-    image: "/GymEssentials.jpg",
-    gallery: ["/GymEssentials.jpg"],
-    category: "gym",
-    categoryLabel: "Gym Equipment",
-    badge: "Bundle Offer",
-    isBestSeller: true,
-    rating: 4.9,
-    reviewsCount: 160,
-    price: 1299,
-    originalPrice: 1999,
-    sku: "MART-KIT-05",
-    inStock: true,
-    packInfo: "5-Piece Complete Gym Set + Bag",
-    optionsLabel: "Resistance Level",
-    options: ["Standard (Light-Medium)", "Pro (Heavy-Extra Heavy)"],
-    highlights: [
-      {
-        title: "Total Body Training",
-        subtitle: "Targets arms, chest, core and legs",
-        icon: "strength",
-      },
-      {
-        title: "Heavy-Duty Latex",
-        subtitle: "Snap-resistant layered loop bands",
-        icon: "layers",
-      },
-      {
-        title: "Ergonomic Handles",
-        subtitle: "Padded push-up stands protect wrists",
-        icon: "grid",
-      },
-      {
-        title: "Travel-Ready Tote",
-        subtitle: "Pack everything and train anywhere",
-        icon: "award",
-      },
-    ],
-    keyFeatures: [
-      "Includes 3 progressive loop resistance bands (Light, Medium, Heavy)",
-      "High-speed 360-degree ball bearing jump rope with coated steel cable",
-      "Ergonomic angled push-up bars with slip-resistant foam grips",
-      "Water-resistant drawstring backpack for portable gym sessions",
-    ],
-    specifications: [
-      { label: "Items Included", value: "5 Pieces", detail: "Bands, rope, bars & bag" },
-      { label: "Push-Up Bars", value: "Steel + Padded EVA", detail: "Supports up to 130 kg" },
-      { label: "Bands Material", value: "100% Natural Latex", detail: "Eco-friendly elasticity" },
-      { label: "Total Weight", value: "1.1 kg", detail: "Compact travel kit" },
-    ],
-    dimensionsSummary: {
-      primaryLabel: "Kit Contents",
-      primaryValue: "5 Items",
-      secondaryLabel: "Total Weight",
-      secondaryValue: "1.1 kg",
-      extraLabel: "Carry Bag",
-      extraValue: "Included",
-    },
-    idealFor: [
-      {
-        title: "Home Workouts",
-        description: "Full-body strength and conditioning in any room",
-        icon: "home",
-      },
-      {
-        title: "Strength & Toning",
-        description: "Progressive overload with resistance bands & push-ups",
-        icon: "dumbbell",
-      },
-      {
-        title: "HIIT & Cardio",
-        description: "High-cadence rope skipping intervals to burn fat",
-        icon: "cardio",
-      },
-      {
-        title: "Core Stability",
-        description: "Calisthenics, planks, and mountain climbers",
-        icon: "core",
-      },
-    ],
-  },
 ];
 
 export const PRODUCT_ORDER = [
@@ -964,7 +983,6 @@ export const PRODUCT_ORDER = [
   "skipping-rope",
   "yoga-mat",
   "sports-training-ball",
-  "gym-essentials-kit",
   "hex-dumbbells-5kg",
   "agility-ladder-pro",
 ];

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "inq-1794506608829",
+    "fullName": "Sushain",
+    "phone": "9876543210",
+    "email": "ask@gmail.com",
+    "city": "Gurugram",
+    "inquiryType": "Bulk / Wholesale Order",
+    "message": "I want cricket Bats around 25-30 with good wood quality please.",
+    "isResolved": true,
+    "isNew": false,
+    "createdAt": "2026-11-12T18:03:28.829Z"
+  },
+  {
+    "id": "inq-1",
+    "fullName": "Roel Sharma",
+    "phone": "9876543210",
+    "email": "roel.sharma@gmail.com",
+    "city": "New Delhi",
+    "inquiryType": "Bulk / Wholesale Order",
+    "message": "Hi M.art team, We run a sports academy in Rohini and need 50 sets of Wooden Dumbbells (2kg to 5kg) and 100 Training Cones. Could you please share the wholesale catalog and discounted price quote for bulk purchase?",
+    "isResolved": false,
+    "isNew": true,
+    "createdAt": "2026-11-12T06:30:00.000Z"
+  },
+  {
+    "id": "inq-2",
+    "fullName": "Vikram Gill",
+    "phone": "9812345678",
+    "email": "vikram.gill@ironfit.in",
+    "city": "Chandigarh",
+    "inquiryType": "Gym / Academy Setup",
+    "message": "We are setting up a new cross-training studio in Sector 34. Looking for commercial gym bundles, training accessories, and customized weight plates. Please arrange a callback with your B2B sales lead.",
+    "isResolved": false,
+    "isNew": true,
+    "createdAt": "2026-11-11T14:45:00.000Z"
+  }
+]

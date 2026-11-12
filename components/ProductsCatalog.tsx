@@ -38,7 +38,6 @@ export const PRODUCT_ORDER = [
   "skipping-rope",
   "yoga-mat",
   "sports-training-ball",
-  "gym-essentials-kit",
   "hex-dumbbells-5kg",
   "agility-ladder-pro",
 ];
@@ -106,19 +105,6 @@ export const ALL_PRODUCTS: ProductItem[] = [
     reviewsCount: 92,
     price: 549,
     originalPrice: 799,
-  },
-  {
-    id: "gym-essentials-kit",
-    name: "Pro Gym Essentials Kit",
-    image: "/GymEssentials.jpg",
-    category: "gym",
-    categoryLabel: "Gym Equipment",
-    badge: "Bundle Offer",
-    isBestSeller: true,
-    rating: 4.9,
-    reviewsCount: 160,
-    price: 1299,
-    originalPrice: 1999,
   },
   {
     id: "hex-dumbbells-5kg",
@@ -209,19 +195,48 @@ export default function ProductsCatalog() {
 
   useEffect(() => {
     async function loadProducts() {
+      let deletedIds: string[] = [];
+
+      // 1. Static Mode: Check local storage first for admin edits & deletions
+      try {
+        const deletedRaw = localStorage.getItem("mart_deleted_products");
+        if (deletedRaw) {
+          deletedIds = JSON.parse(deletedRaw);
+        }
+
+        const stored = localStorage.getItem("mart_admin_products");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const adminIds = new Set(parsed.map((p: any) => p.id));
+            ALL_PRODUCTS.forEach((p) => {
+              if (!adminIds.has(p.id) && !deletedIds.includes(p.id)) {
+                deletedIds.push(p.id);
+              }
+            });
+            setProductsList(parsed.filter((p: any) => !deletedIds.includes(p.id)));
+          }
+        }
+      } catch (e) {
+        console.warn("Could not load local admin products:", e);
+      }
+
+      // 2. Database Mode: Check Supabase if connected, respecting deletions
       try {
         const { data, error } = await supabase.from("products").select("*");
         if (!error && data && data.length > 0) {
           const orderMap = new Map(PRODUCT_ORDER.map((id, index) => [id, index]));
-          const sorted = [...(data as ProductItem[])].sort((a, b) => {
-            const indexA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
-            const indexB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
-            return indexA - indexB;
-          });
+          const sorted = [...(data as ProductItem[])]
+            .filter((p) => !deletedIds.includes(p.id))
+            .sort((a, b) => {
+              const indexA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
+              const indexB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
+              return indexA - indexB;
+            });
           setProductsList(sorted);
         }
       } catch (e) {
-        console.warn("Failed to fetch products from Supabase:", e);
+        // Fallback silently to static / localStorage
       }
     }
     loadProducts();
@@ -320,6 +335,7 @@ export default function ProductsCatalog() {
     bestSellersOnly,
     searchQuery,
     sortBy,
+    productsList,
   ]);
 
   const activeFilterCount =

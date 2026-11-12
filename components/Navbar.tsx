@@ -16,6 +16,7 @@ import {
 } from "./Icons";
 import { useStore } from "@/context/StoreContext";
 import { useAuth } from "@/context/AuthContext";
+import { ChevronDown, Package, Heart, LogOut, User } from "lucide-react";
 
 const NAV_CATEGORIES = [
   { label: "All Products", href: "/products", count: 6 },
@@ -43,6 +44,22 @@ export default function Navbar() {
 
   const { user, openLoginModal, openSignUpModal, signOut } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = React.useRef<HTMLDivElement>(null);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    if (userMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userMenuOpen]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,8 +152,8 @@ export default function Navbar() {
           <div className="relative flex items-center justify-between h-18 sm:h-22 lg:h-24 gap-2 sm:gap-4">
             
             {/* Logo & Brand Name (Left) */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-3.5 shrink-0 group z-10 min-w-0">
-              <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 shrink-0 transition-transform group-hover:scale-105 duration-200">
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3.5 shrink-0 group z-10 min-w-0">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 shrink-0 transition-transform group-hover:scale-105 duration-200">
                 <Image
                   src="/logo.png"
                   alt="M.art Sports & Fitness"
@@ -146,10 +163,10 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-extrabold text-xl sm:text-3xl lg:text-[32px] tracking-tight text-stone-900 leading-none group-hover:text-orange-600 transition-colors">
+                <span className="font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-stone-900 leading-none group-hover:text-orange-600 transition-colors">
                   M.art
                 </span>
-                <span className="text-[9px] sm:text-[11px] lg:text-xs font-bold tracking-wider text-orange-600 uppercase mt-0.5 sm:mt-1 whitespace-nowrap">
+                <span className="text-[10px] sm:text-xs lg:text-[13px] font-bold tracking-wider text-orange-600 uppercase mt-0.5 sm:mt-1 whitespace-nowrap">
                   Sports &amp; Fitness
                 </span>
               </div>
@@ -299,23 +316,100 @@ export default function Navbar() {
                   </button>
                 </div>
               ) : (
-                <div className="relative hidden sm:block pl-2 border-l border-stone-200">
-                  <Link
-                    href="/profile"
-                    className="flex items-center gap-2 p-1.5 pr-3.5 rounded-full bg-orange-50 hover:bg-orange-500 border border-orange-200 hover:border-orange-500 text-orange-600 hover:text-white transition-all cursor-pointer shadow-xs hover:shadow-orange-500/25 group"
-                    aria-label="View Athlete Profile"
+                <div className="relative hidden sm:block pl-2 border-l border-stone-200" ref={userMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setUserMenuOpen((prev) => !prev)}
+                    className="flex items-center gap-2 p-1.5 pr-3 rounded-full bg-orange-50 hover:bg-orange-100/80 border border-orange-200/90 text-stone-800 transition-all cursor-pointer shadow-xs group"
+                    aria-label="Account Menu"
+                    aria-expanded={userMenuOpen}
                   >
                     <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-black text-xs flex items-center justify-center uppercase shadow-sm group-hover:scale-105 transition-transform">
                       {user.user_metadata?.full_name
                         ? user.user_metadata.full_name.charAt(0).toUpperCase()
                         : user.email?.charAt(0).toUpperCase() || "U"}
                     </div>
-                    <span className="text-xs font-bold max-w-[100px] truncate text-stone-800 group-hover:text-white">
+                    <span className="text-xs font-bold max-w-[110px] truncate text-stone-800">
                       {user.user_metadata?.full_name ||
                         user.email?.split("@")[0] ||
                         "Profile"}
                     </span>
-                  </Link>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-stone-500 transition-transform duration-200 ${
+                        userMenuOpen ? "rotate-180 text-orange-600" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-stone-200/90 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                      {/* User Header Info */}
+                      <div className="px-4 py-3 border-b border-stone-100 flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-black text-sm flex items-center justify-center uppercase shadow-xs shrink-0">
+                          {user.user_metadata?.full_name
+                            ? user.user_metadata.full_name.charAt(0).toUpperCase()
+                            : user.email?.charAt(0).toUpperCase() || "U"}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-extrabold text-stone-900 truncate">
+                            {user.user_metadata?.full_name || user.email?.split("@")[0] || "Athlete Member"}
+                          </p>
+                          <p className="text-[11px] font-medium text-stone-500 truncate">
+                            {user.email || ""}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Menu Options */}
+                      <div className="p-1.5 space-y-0.5">
+                        <Link
+                          href="/profile?tab=orders"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-stone-700 hover:text-orange-600 hover:bg-orange-50/70 rounded-xl transition-all cursor-pointer group"
+                        >
+                          <Package className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
+                          <span className="flex-1">My Orders</span>
+                          <span className="text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">
+                            Orders
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/profile?tab=details"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-stone-700 hover:text-orange-600 hover:bg-orange-50/70 rounded-xl transition-all cursor-pointer group"
+                        >
+                          <User className="w-4 h-4 text-stone-400 group-hover:text-orange-500 group-hover:scale-110 transition-transform" />
+                          <span>My Profile & Address</span>
+                        </Link>
+
+                        <Link
+                          href="/profile?tab=wishlist"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-stone-700 hover:text-orange-600 hover:bg-orange-50/70 rounded-xl transition-all cursor-pointer group"
+                        >
+                          <Heart className="w-4 h-4 text-stone-400 group-hover:text-orange-500 group-hover:scale-110 transition-transform" />
+                          <span>Wishlist</span>
+                        </Link>
+                      </div>
+
+                      {/* Sign Out Option */}
+                      <div className="border-t border-stone-100 p-1.5 mt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            signOut();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 

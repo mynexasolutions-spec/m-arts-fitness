@@ -11,6 +11,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ALL_PRODUCTS, getProductById, ProductDetailItem } from "@/data/products";
 import {
+  DeliverySettings,
+  DEFAULT_DELIVERY_SETTINGS,
+  getStoredDeliverySettings,
+} from "@/data/deliverySettings";
+import {
   ShoppingCartIcon,
   HeartIcon,
   XIcon,
@@ -47,6 +52,7 @@ interface StoreContextType {
   getProductCartCount: (productId: string) => number;
   totalCartCount: number;
   totalWishlistCount: number;
+  deliverySettings: DeliverySettings;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -56,6 +62,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [wishlistDrawerOpen, setWishlistDrawerOpen] = useState(false);
+  const [deliverySettings, setDeliverySettings] = useState<DeliverySettings>(DEFAULT_DELIVERY_SETTINGS);
+
+  useEffect(() => {
+    setDeliverySettings(getStoredDeliverySettings());
+    const onUpdate = () => setDeliverySettings(getStoredDeliverySettings());
+    window.addEventListener("mart_delivery_settings_updated", onUpdate);
+    window.addEventListener("storage", onUpdate);
+    return () => {
+      window.removeEventListener("mart_delivery_settings_updated", onUpdate);
+      window.removeEventListener("storage", onUpdate);
+    };
+  }, []);
 
   // Clean up any previously saved localStorage keys so state is purely in-memory
   useEffect(() => {
@@ -187,8 +205,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const totalSavings = totalMRP - subtotal;
-  const freeDeliveryThreshold = 999;
+  const freeDeliveryThreshold = Number(deliverySettings.freeShippingThreshold) || 999;
+  const standardDeliveryFee = Number(deliverySettings.standardDeliveryFee) || 49;
   const amountForFreeDelivery = Math.max(0, freeDeliveryThreshold - subtotal);
+  const currentDeliveryCharge =
+    subtotal === 0 || amountForFreeDelivery === 0 ? 0 : standardDeliveryFee;
 
   const wishlistProducts = useMemo(
     () =>
@@ -216,6 +237,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         getProductCartCount,
         totalCartCount,
         totalWishlistCount,
+        deliverySettings,
       }}
     >
       {children}
@@ -430,17 +452,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
                 <div className="flex justify-between text-stone-600 font-semibold">
                   <span>Delivery</span>
                   <span>
-                    {amountForFreeDelivery === 0 ? (
+                    {currentDeliveryCharge === 0 ? (
                       <strong className="text-emerald-600">FREE</strong>
                     ) : (
-                      "₹49"
+                      `₹${currentDeliveryCharge}`
                     )}
                   </span>
                 </div>
                 <div className="pt-2 border-t border-stone-200 flex justify-between items-baseline text-sm sm:text-base font-black text-stone-950">
                   <span>Total Payable</span>
                   <span>
-                    ₹{subtotal + (amountForFreeDelivery === 0 ? 0 : 49)}
+                    ₹{subtotal + currentDeliveryCharge}
                   </span>
                 </div>
               </div>

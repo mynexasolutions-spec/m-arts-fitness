@@ -82,6 +82,27 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
+  // Auto-switch tab based on URL query param (e.g. ?tab=orders)
+  useEffect(() => {
+    const handleUrlTab = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        if (
+          tab === 'orders' ||
+          tab === 'wishlist' ||
+          tab === 'security' ||
+          tab === 'details'
+        ) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    handleUrlTab();
+    window.addEventListener('popstate', handleUrlTab);
+    return () => window.removeEventListener('popstate', handleUrlTab);
+  }, []);
+
   // Sync initial user data
   useEffect(() => {
     if (user) {
@@ -598,20 +619,21 @@ export default function ProfilePage() {
                 {/* 2. ORDER HISTORY TAB */}
                 {activeTab === "orders" && (
                   <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-sm">
-                    <div className="border-b border-stone-200/80 pb-4 mb-6 flex items-center justify-between">
+                    <div className="border-b border-stone-200/80 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
                       <div>
-                        <h3 className="text-lg sm:text-xl font-black text-stone-900">
+                        <h3 className="text-base sm:text-xl font-black text-stone-900">
                           Order History
                         </h3>
-                        <p className="text-xs text-stone-500 mt-0.5">
+                        <p className="text-[11px] sm:text-xs text-stone-500 mt-0.5">
                           View details of your past sports &amp; gym equipment purchases.
                         </p>
                       </div>
                       <Link
                         href="/products"
-                        className="text-xs font-bold text-orange-600 hover:underline"
+                        className="self-start sm:self-auto inline-flex items-center gap-1 text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline whitespace-nowrap shrink-0"
                       >
-                        Shop More Gear
+                        <span>Shop More Gear</span>
+                        <span aria-hidden="true">→</span>
                       </Link>
                     </div>
 
@@ -684,16 +706,16 @@ export default function ProfilePage() {
                 {/* 3. WISHLIST TAB */}
                 {activeTab === "wishlist" && (
                   <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/90 shadow-sm">
-                    <div className="border-b border-stone-200/80 pb-4 mb-6 flex items-center justify-between">
+                    <div className="border-b border-stone-200/80 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
                       <div>
-                        <h3 className="text-lg sm:text-xl font-black text-stone-900">
+                        <h3 className="text-base sm:text-xl font-black text-stone-900">
                           My Saved Wishlist
                         </h3>
-                        <p className="text-xs text-stone-500 mt-0.5">
+                        <p className="text-[11px] sm:text-xs text-stone-500 mt-0.5">
                           Equipment and accessories you have bookmarked for later.
                         </p>
                       </div>
-                      <span className="text-xs font-bold text-orange-600">
+                      <span className="self-start sm:self-auto text-xs font-bold text-orange-600 whitespace-nowrap shrink-0">
                         {wishlistedProducts.length} Saved Items
                       </span>
                     </div>

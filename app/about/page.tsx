@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TrustStrip from "@/components/TrustStrip";
 import AboutCategorySlider from "@/components/AboutCategorySlider";
+import AboutStatsStrip from "@/components/AboutStatsStrip";
 import {
   AwardIcon,
   ShieldCheckIcon,
@@ -25,33 +26,6 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  const stats = [
-    {
-      value: "15,000+",
-      label: "Active Athletes",
-      detail: "Gym lovers & athletes across India",
-      icon: FlameIcon,
-    },
-    {
-      value: "500+",
-      label: "Premium Gear",
-      detail: "Commercial-grade items in stock",
-      icon: TagIcon,
-    },
-    {
-      value: "4.9 ★",
-      label: "Customer Rating",
-      detail: "From 8,500+ verified buyer reviews",
-      icon: StarIcon,
-    },
-    {
-      value: "Pan-India",
-      label: "Express Delivery",
-      detail: "Fast, safe doorstep transit nationwide",
-      icon: TruckIcon,
-    },
-  ];
-
   const values = [
     {
       icon: ShieldCheckIcon,
@@ -346,49 +320,9 @@ export default function AboutPage() {
         </section>
 
         {/* ========================================================= */}
-        {/* 5. STATS STRIP (Athletic Impact Metric Cards)             */}
+        {/* 5. STATS STRIP (Athletic Impact Metric Cards - Live Sync) */}
         {/* ========================================================= */}
-        <section className="relative py-14 sm:py-16 lg:py-20 bg-gradient-to-b from-[#13110f] via-[#1a1714] to-[#12100e] text-white border-y border-stone-800/80 overflow-hidden">
-          {/* Subtle Ambient Brand Glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(249,115,22,0.08)_0%,_transparent_70%)] pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-orange-500/20 to-transparent" />
-
-          <div className="relative z-10 max-w-[1520px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
-              {stats.map((stat, idx) => {
-                const IconComponent = stat.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="group relative p-6 sm:p-7 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-orange-500/40 transition-all duration-300 flex flex-col items-center text-center shadow-lg shadow-black/30 hover:shadow-orange-500/10 hover:-translate-y-1 overflow-hidden"
-                  >
-                    {/* Top corner ambient hover glow */}
-                    <div className="absolute top-0 right-0 w-28 h-28 bg-orange-500/10 rounded-bl-full pointer-events-none group-hover:scale-150 transition-transform duration-500" />
-                    
-                    {/* Icon Container */}
-                    <div className="w-12 h-12 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-orange-500 group-hover:to-amber-500 group-hover:text-white group-hover:border-transparent transition-all duration-300 shadow-md shadow-orange-500/10">
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-
-                    {/* Stat Number with Brand Gradient */}
-                    <div className="text-3xl sm:text-4xl lg:text-[40px] font-black tracking-tight leading-none bg-gradient-to-r from-orange-400 via-orange-500 to-amber-300 bg-clip-text text-transparent mb-2 whitespace-nowrap drop-shadow-[0_2px_14px_rgba(249,115,22,0.3)]">
-                      {stat.value}
-                    </div>
-
-                    {/* Stat Label & Details */}
-                    <div className="text-sm sm:text-base font-bold text-white group-hover:text-orange-400 transition-colors mb-1">
-                      {stat.label}
-                    </div>
-                    <p className="text-xs sm:text-[13px] text-stone-400 font-medium leading-relaxed max-w-[220px]">
-                      {stat.detail}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        <AboutStatsStrip />
 
         {/* ========================================================= */}
         {/* 6. OUR CORE VALUES                                        */}

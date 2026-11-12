@@ -1,12 +1,30 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { TruckIcon, ShieldCheckIcon, RotateCcwIcon, CreditCardIcon } from "./Icons";
+import { getStoredDeliverySettings } from "@/data/deliverySettings";
 
 export default function TrustStrip() {
+  const [threshold, setThreshold] = useState(999);
+
+  useEffect(() => {
+    setThreshold(getStoredDeliverySettings().freeShippingThreshold);
+    const onUpdate = () => {
+      setThreshold(getStoredDeliverySettings().freeShippingThreshold);
+    };
+    window.addEventListener("mart_delivery_settings_updated", onUpdate);
+    window.addEventListener("storage", onUpdate);
+    return () => {
+      window.removeEventListener("mart_delivery_settings_updated", onUpdate);
+      window.removeEventListener("storage", onUpdate);
+    };
+  }, []);
+
   const items = [
     {
       icon: TruckIcon,
       title: "Free Delivery",
-      subtitle: "On all orders above ₹999",
+      subtitle: `On all orders above ₹${threshold}`,
     },
     {
       icon: ShieldCheckIcon,

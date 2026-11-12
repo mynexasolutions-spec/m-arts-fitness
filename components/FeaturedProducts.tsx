@@ -30,7 +30,6 @@ const FEATURED_ORDER = [
   "skipping-rope",
   "yoga-mat",
   "sports-training-ball",
-  "gym-essentials-kit",
   "hex-dumbbells-5kg",
   "agility-ladder-pro",
 ];
@@ -135,17 +134,6 @@ const products: Product[] = [
     price: 549,
     originalPrice: 799,
   },
-  {
-    id: "gym-essentials-kit",
-    name: "Pro Gym Essentials Kit",
-    image: "/GymEssentials.jpg",
-    category: "gym",
-    badge: "Bundle Offer",
-    rating: 4.9,
-    reviewsCount: 160,
-    price: 1299,
-    originalPrice: 1999,
-  },
 ];
 
 const filterTabs = [
@@ -167,19 +155,48 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     async function loadFeatured() {
+      let deletedIds: string[] = [];
+
+      // 1. Static Mode: Check local storage first for admin edits & deletions
+      try {
+        const deletedRaw = localStorage.getItem("mart_deleted_products");
+        if (deletedRaw) {
+          deletedIds = JSON.parse(deletedRaw);
+        }
+
+        const stored = localStorage.getItem("mart_admin_products");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const adminIds = new Set(parsed.map((p: any) => p.id));
+            products.forEach((p) => {
+              if (!adminIds.has(p.id) && !deletedIds.includes(p.id)) {
+                deletedIds.push(p.id);
+              }
+            });
+            setProductList(parsed.filter((p: any) => !deletedIds.includes(p.id)));
+          }
+        }
+      } catch (e) {
+        console.warn("Could not load local admin products:", e);
+      }
+
+      // 2. Database Mode: Check Supabase if connected
       try {
         const { data, error } = await supabase.from("products").select("*");
         if (!error && data && data.length > 0) {
           const orderMap = new Map(FEATURED_ORDER.map((id, index) => [id, index]));
-          const sorted = [...(data as Product[])].sort((a, b) => {
-            const indexA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
-            const indexB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
-            return indexA - indexB;
-          });
+          const sorted = [...(data as Product[])]
+            .filter((p) => !deletedIds.includes(p.id))
+            .sort((a, b) => {
+              const indexA = orderMap.has(a.id) ? orderMap.get(a.id)! : 999;
+              const indexB = orderMap.has(b.id) ? orderMap.get(b.id)! : 999;
+              return indexA - indexB;
+            });
           setProductList(sorted);
         }
       } catch (e) {
-        console.warn("Failed to fetch featured products from Supabase:", e);
+        // Fallback silently to static / localStorage
       }
     }
     loadFeatured();
